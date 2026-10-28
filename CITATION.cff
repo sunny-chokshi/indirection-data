@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use these stimuli, logs or scripts, please cite the preprint and this record."
+title: "Does Indirection Hurt? Stimuli, per-call results, audit list and analysis scripts"
+type: dataset
+version: 1.0.0
+date-released: 2026-10-28
+authors:
+  - family-names: Chokshi
+    given-names: Sunny
+    orcid: "https://orcid.org/0009-0003-4738-7759"
+    affiliation: "University of the Cumberlands"
+license:
+  - CC-BY-4.0
+  - MIT
+keywords:
+  - cryptographic API misuse
+  - LLM code review
+  - indirection
+  - false positives
+  - secure twins
+  - balanced accuracy
+abstract: >
+  Supplement to the preprint "Does Indirection Hurt? Paired Evidence on LLM Review of
+  Indirectly Written Cryptographic API Misuse". 90 matched pairs of Python snippets
+  (vulnerable and secure twin) in plain and indirect forms, the audit list of 33 pairs
+  that are not clean matches, all per-call results (16 open models, 3 repeats) and the
+  scripts that recompute the paper's numbers.
+references:
+  - type: article
+    title: "Does Indirection Hurt? Paired Evidence on LLM Review of Indirectly Written Cryptographic API Misuse"
+    authors:
+      - family-names: Chokshi
+        given-names: Sunny
+    year: 2026
+    doi: "10.5281/zenodo.23351769"

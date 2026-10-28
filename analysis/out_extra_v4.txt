@@ -1,0 +1,3 @@
+mean extra chars in indirect form (vuln+secure): 74.7  Pearson r(length diff, pair drop): 0.025
+codestral plain 0.7625 indirect 0.7667 change +0.0042
+keys in rows: ['category', 'content', 'correct', 'cwe', 'detected', 'done_reason', 'eval_count', 'form', 'label', 'model', 'options', 'pair', 'prompt_eval_count', 'repeat', 'sample_id', 'set', 'thinking', 'ts', 'variant', 'verdict', 'verdict_line', 'wall_s']

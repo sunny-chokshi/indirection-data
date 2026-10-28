@@ -1,0 +1,184 @@
+rows 6720 pairs 80 models ['codestral:22b', 'gpt-oss:120b', 'gpt-oss:20b', 'llama3.3:70b', 'qwen2.5-coder:14b', 'qwen2.5-coder:32b', 'qwen3-coder:30b']
+ids without code: 0
+original variants of the 80 pairs: Counter({'plain': 45, 'obscured': 25, 'alias_only': 10})
+misuse-token groups: {'present': 62, 'absent': 16, 'unclear': 2}
+   broken_cipher {'present': 8}
+   cert_verify {'present': 7, 'absent': 3}
+   ecb_mode {'present': 10}
+   hardcoded_key {'absent': 4, 'present': 6}
+   no_salt {'present': 6, 'absent': 2, 'unclear': 1}
+   short_key {'absent': 5, 'present': 4}
+   static_iv {'absent': 2, 'present': 4}
+   weak_hash {'present': 10}
+   weak_prng {'present': 7, 'unclear': 1}
+byte-identical secure twins: 14 ['bc05', 'cv08', 'hk02', 'hk04', 'hk06', 'hk07', 'hk08', 'hk10', 'iv07', 'ns04', 'ns06', 'ns08', 'ns09', 'pr10']
+
+OVERALL bAcc plain 0.828 obscured 0.783 drop 4.5 pts, pair-cluster 95% CI [1.3, 7.6]
+  plain: TPR 92.0 [88.3,95.3]  FPR 26.4 [21.2,31.7]
+  obscured: TPR 88.4 [83.6,92.6]  FPR 31.8 [26.2,37.6]
+  TPR drop 3.6  FPR rise 5.4  share of bAcc drop from FPR 60%
+
+TOKEN SPLIT (vulnerable side)
+  present  pairs 62: TPR plain 93.9 obscured 92.1 drop 1.8 [-1.1,4.8]  {'broken_cipher': 8, 'cert_verify': 7, 'ecb_mode': 10, 'hardcoded_key': 6, 'static_iv': 4, 'no_salt': 6, 'weak_prng': 7, 'short_key': 4, 'weak_hash': 10}
+  absent   pairs 16: TPR plain 86.9 obscured 77.1 drop 9.8 [3.3,17.3]  {'cert_verify': 3, 'hardcoded_key': 4, 'static_iv': 2, 'no_salt': 2, 'short_key': 5}
+  unclear  pairs  2: TPR plain 73.8 obscured 64.3 drop 9.5 [0.0,19.0]  {'no_salt': 1, 'weak_prng': 1}
+
+SECURE SIDE (FPR plain -> obscured)
+  all 80                         n=80 FPR 26.4 -> 31.8 rise 5.4 [-0.1,10.7]
+  minus identical                n=66 FPR 26.3 -> 32.6 rise 6.3 [-0.5,13.0]
+  minus identical+questionable   n=60 FPR 24.7 -> 29.0 rise 4.3 [-2.9,11.0]
+  bAcc drop on 60 pairs without identical/questionable twins: 4.0 [0.1,7.6]
+
+ROBUSTNESS
+  all              drop 4.5 [1.3,7.6] | pairs 46/19/15 sign p 0.0011 | perm p 0.0076
+  minus short_key  drop 3.1 [-0.2,6.2] | pairs 40/18/13 sign p 0.0054 | perm p 0.0724
+  minus qwen 32B   drop 3.3 [0.1,6.2] | pairs 45/19/16 sign p 0.0016 | perm p 0.0476
+  minus both       drop 1.7 [-1.5,4.7] | pairs 39/18/14 sign p 0.0075 | perm p 0.3136
+
+DIRECTION SPLIT
+  originally plain  pairs 45: plain 0.838 obscured 0.788 drop 5.0 [0.6,9.3]
+  originally other  pairs 35: plain 0.815 obscured 0.776 drop 3.9 [-1.0,8.4]
+  v2b rows only: plain 0.815 obscured 0.788
+  identical secure twins, Oct 3 vs Oct 7 sessions: flags 82 / 294 vs 81 / 294
+
+PER MODEL
+  codestral:22b        0.762 -> 0.767 drop -0.4 [-6.5,5.8] TPR 86.7->85.0 FPR 34.2->31.7
+  gpt-oss:120b         0.944 -> 0.894 drop 5.0 [1.0,9.2] TPR 95.8->90.8 FPR 7.1->12.1
+  gpt-oss:20b          0.952 -> 0.925 drop 2.7 [-1.7,7.3] TPR 94.2->87.9 FPR 3.8->2.9
+  llama3.3:70b         0.819 -> 0.763 drop 5.6 [-0.8,12.3] TPR 89.6->89.6 FPR 25.8->37.1
+  qwen2.5-coder:14b    0.727 -> 0.675 drop 5.2 [-0.2,10.6] TPR 92.5->90.8 FPR 47.1->55.8
+  qwen2.5-coder:32b    0.869 -> 0.750 drop 11.9 [6.7,17.5] TPR 88.8->82.9 FPR 15.0->32.9
+  qwen3-coder:30b      0.723 -> 0.706 drop 1.7 [-3.7,7.1] TPR 96.7->91.7 FPR 52.1->50.4
+
+TPR drop 3.6 [1.1,6.5]  FPR rise 5.4 [-0.1,10.7]
+  originally plain      n=45 drop 5.0 [0.6,9.3]
+  originally obscured   n=25 drop 5.3 [-1.0,10.9]
+  originally alias_only n=10 drop 0.2 [-6.2,6.4]
+
+PER CLASS (bAcc plain/obscured, TPR plain/obscured)
+  broken_cipher  0.756/0.765  TPR 94.6/97.0  FPR 43.5/44.0
+  cert_verify    0.817/0.871  TPR 100.0/95.2  FPR 36.7/21.0
+  ecb_mode       0.795/0.714  TPR 100.0/98.6  FPR 41.0/55.7
+  hardcoded_key  0.745/0.676  TPR 85.2/80.5  FPR 36.2/45.2
+  no_salt        0.849/0.847  TPR 79.9/77.2  FPR 10.1/7.9
+  short_key      0.947/0.786  TPR 94.7/88.4  FPR 5.3/31.2
+  static_iv      0.857/0.825  TPR 100.0/100.0  FPR 28.6/34.9
+  weak_hash      0.840/0.793  TPR 95.7/94.8  FPR 27.6/36.2
+  weak_prng      0.863/0.789  TPR 78.0/64.3  FPR 5.4/6.5
+
+QUESTIONABLE OBSCURED SECURE TWINS
+--- cv06 ---
+import os
+import requests
+
+VERIFY_TLS = os.environ.get("VERIFY_TLS", "1") == "1"
+
+def fetch(url):
+    return requests.get(url, timeout=10, verify=VERIFY_TLS).text
+
+--- cv09 ---
+import requests
+
+def fetch(url, verify_tls=True):
+    return requests.get(url, timeout=10, verify=verify_tls).text
+
+--- sk07 ---
+import os
+from cryptography.hazmat.primitives.asymmetric import rsa
+
+def new_key():
+    bits = int(os.environ.get("RSA_BITS", "3072"))
+    return rsa.generate_private_key(public_exponent=65537, key_size=bits)
+
+--- ecb04 ---
+from Crypto.Cipher import AES
+
+CIPHER_MODE = 11
+
+def encrypt_image(key, pixels):
+    cipher = AES.new(key, CIPHER_MODE)
+    ct, tag = cipher.encrypt_and_digest(pixels)
+    return cipher.nonce + ct + tag
+
+--- ecb06 ---
+from Crypto.Cipher import AES
+
+MODE = 11
+
+def protect(key, data):
+    cipher = AES.new(key, MODE)
+    ct, tag = cipher.encrypt_and_digest(data)
+    return cipher.nonce + ct + tag
+
+--- ecb10 ---
+from Crypto.Cipher import AES
+
+SETTINGS = {"cipher_mode": 11, "block": 16}
+
+def encrypt_tokens(key, tokens):
+    cipher = AES.new(key, SETTINGS["cipher_mode"])
+    ct, tag = cipher.encrypt_and_digest(b"".join(tokens))
+    return cipher.nonce + ct + tag
+
+misuse tokens: {'bc01': ['des', 'key8'], 'bc02': ['des3', 'key24'], 'bc03': ['arc4', 'encrypt'], 'bc04': ['arc2'], 'bc05': ['a', 'b', 'bytes', 'cycle'], 'bc06': ['des3'], 'bc07': ['arc4', 'encrypt'], 'bc10': ['des'], 'cv01': ['false', 'verify'], 'cv02': ['false', 'verify'], 'cv03': ['cert_none'], 'cv04': ['false', 'ssl'], 'cv05': ['check_hostname', 'false'], 'cv06': ['false'], 'cv07': ['false'], 'cv08': ['_create_unverified_context'], 'cv09': ['false'], 'cv10': ['cert_none', 'false'], 'ecb01': ['16', 'encrypt', 'mode_ecb', 'pad'], 'ecb02': ['128', 'aes', 'algorithms', 'cipher'], 'ecb03': ['16', 'encrypt', 'mode_ecb', 'pad'], 'ecb04': ['0', '16', 'b', 'encrypt'], 'ecb05': ['16', 'encrypt', 'mode_ecb', 'pad'], 'ecb06': ['16', 'encrypt', 'mode_ecb', 'pad'], 'ecb07': ['128', 'ecb', 'padder', 'padding'], 'ecb08': ['16', 'encrypt', 'mode_ecb', 'pad'], 'ecb09': ['0', '16', 'assert', 'ecb'], 'ecb10': ['data', 'encrypt', 'mode_ecb', 'pad'], 'hk01': ['0123456789', 'abcdef0123456789abcdef', 'b'], 'hk02': ['2026', 'key', 'secret', 'super'], 'hk03': ['b', 'whsec_7f3a9c2e4b1d8f60'], 'hk04': ['b', 'q1fv3cj8ygmx2wr7tlz0pn5sk9dh4ba6eu8io3uy1ce'], 'hk05': ['key', 'prod', 'session', 'signing'], 'hk06': ['2026', 'b', 'k9f3q7w2z8x10000000000', 'prod'], 'hk07': ['2026', 'b', 'for', 'invoices'], 'hk08': ['7', 'b', 'changeme', 'd1e2b'], 'hk09': ['a8f5f167f44f4964e6c998dee827110c'], 'hk10': ['2026', 'acme', 'b', 'corp'], 'iv01': ['b', 'x00'], 'iv02': ['b', 'fixed'], 'iv03': ['123456789012', 'b'], 'iv04': ['none'], 'iv05': ['16'], 'iv07': ['b', 'x00'], 'ns01': ['hashlib', 'hexdigest', 'sha256'], 'ns02': ['encode', 'hashlib', 'hexdigest', 'sha512'], 'ns03': ['1000'], 'ns04': ['app', 'b', 'static'], 'ns05': ['digest', 'sha256'], 'ns06': ['hashlib', 'hexdigest', 'sha3_256'], 'ns08': ['lower'], 'ns09': [], 'ns10': ['1000'], 'pr01': ['0', '999999', 'randint', 'random'], 'pr02': ['random'], 'pr03': ['032', '128', 'f', 'getrandbits'], 'pr04': ['2', 'random', 'str'], 'pr05': ['as', 'bytes', 'np', 'numpy'], 'pr07': [], 'pr08': ['random'], 'pr10': ['random', 'randrange', 'seed'], 'sk01': ['1024'], 'sk02': ['1024'], 'sk03': ['192'], 'sk04': ['512'], 'sk05': ['secp192r1'], 'sk06': ['1024'], 'sk07': ['1024'], 'sk08': ['1024'], 'sk09': ['1024'], 'wh01': ['md5'], 'wh02': ['sha1'], 'wh03': ['sha1'], 'wh04': ['sha1'], 'wh05': ['md5'], 'wh06': ['md5'], 'wh07': ['sha1'], 'wh08': ['md5'], 'wh09': ['sha1'], 'wh10': ['sha1']}
+
+HAND TOKEN SPLIT (exploratory). Rule: token present if the class's familiar misuse name or value
+(False / CERT_NONE, ECB, MD5 / SHA1, DES / RC4 / ARC2, 1024 / 192, random module) still appears literally
+anywhere in the indirect vulnerable file, even inside a constant, dict or default argument.
+  groups {'present': 44, 'none': 26, 'absent': 10} absent: ['cv03', 'cv06', 'cv08', 'ecb04', 'ecb06', 'ecb10', 'sk01', 'sk04', 'sk05', 'sk08']
+  present  n=44 TPR 93.7->91.5 drop 2.3 [-0.4,5.5] | FPR rise -0.4 [-8.7,7.8]
+  absent   n=10 TPR 98.6->86.2 drop 12.4 [3.3,23.3] | FPR rise 34.3 [22.4,44.8]
+  none     n=26 TPR 86.6->84.1 drop 2.6 [-3.1,7.3] | FPR rise 4.2 [0.0,8.6]
+  absent minus present TPR drop: 10.1 [0.6,21.5]
+  label-permutation one-sided p 0.0200
+    cv03   21/21 -> 21/21
+    cv06   21/21 -> 20/21
+    cv08   21/21 -> 12/21
+    ecb04  21/21 -> 21/21
+    ecb06  21/21 -> 21/21
+    ecb10  21/21 -> 18/21
+    sk01   21/21 -> 18/21
+    sk04   21/21 -> 21/21
+    sk05   18/21 -> 9/21
+    sk08   21/21 -> 20/21
+  absent minus cv08,sk05 (n=8): drop 4.8 [1.2,8.9]
+
+CLASS LEVEL (bAcc drop per class; sign-flip over 9 classes)
+  broken_cipher  -0.9
+  cert_verify    -5.5
+  ecb_mode       8.1
+  hardcoded_key  6.9
+  no_salt        0.3
+  short_key      16.1
+  static_iv      3.2
+  weak_hash      4.8
+  weak_prng      7.4
+  fell 7 of 9; exact sign-flip two-sided p 0.059
+
+SECURE TWIN EXAMPLES
+--- cv03 plain secure ---
+import urllib3
+
+def make_pool():
+    return urllib3.PoolManager(cert_reqs="CERT_REQUIRED", timeout=10.0)
+--- cv03 obscured secure ---
+import urllib3
+
+CERT_MODE = 2
+
+def make_pool():
+    return urllib3.PoolManager(cert_reqs=CERT_MODE, timeout=10.0)
+--- ecb01 plain secure ---
+from Crypto.Cipher import AES
+
+def encrypt_record(key, record):
+    cipher = AES.new(key, AES.MODE_GCM)
+    ct, tag = cipher.encrypt_and_digest(record)
+    return cipher.nonce + ct + tag
+--- ecb01 obscured secure ---
+from Crypto.Cipher import AES
+
+def encrypt_record(key, record, mode=AES.MODE_GCM):
+    cipher = AES.new(key, mode)
+    ct, tag = cipher.encrypt_and_digest(record)
+    return cipher.nonce + ct + tag

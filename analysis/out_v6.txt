@@ -1,0 +1,71 @@
+non-clean 33 clean 47
+all 80: bAcc 0.828->0.783 drop 4.5 [1.4, 7.6] | TPR 92.0->88.4 drop 3.6 [1.0, 6.5] | FPR 26.4->31.8 rise 5.4 [-0.1, 10.8]
+   pairs plain better 46 indirect better 19 ties 15 sign p 0.0011
+47 clean: bAcc 0.847->0.793 drop 5.3 [2.1, 8.5] | TPR 90.7->89.2 drop 1.5 [-1.6, 4.8] | FPR 21.4->30.5 rise 9.1 [4.2, 14.6]
+   pairs plain better 26 indirect better 10 ties 11 sign p 0.0113
+TPR lower bound re-run with 3 seeds (all 80, indirect): ['83.8', '83.8', '83.8']
+TPR drop without six API-changing: 2.3 [-0.1, 4.9]
+FPR rise without four cert: 8.0 [3.1, 13.2]
+by twin plain-secure flags cv01/02/04/05: [15, 0, 18, 3]
+PER MODEL FPR rise (all 80 | without four | 47 clean) and bAcc drop clean
+  codestral:22b          -2.5 |    1.3 |    2.1 | bAcc -0.7
+  gpt-oss:120b            5.0 |    6.6 |    2.8 | bAcc 2.1
+  gpt-oss:20b            -0.8 |    0.4 |    2.1 | bAcc 6.4
+  llama3.3:70b           11.2 |   14.5 |   19.1 | bAcc 8.5
+  qwen2.5-coder:14b       8.8 |   11.8 |   18.4 | bAcc 9.2
+  qwen2.5-coder:32b      17.9 |   20.2 |   17.7 | bAcc 10.6
+  qwen3-coder:30b        -1.7 |    0.9 |    1.4 | bAcc 1.1
+NET EXTRA SECURE FLAGS BY CLASS (indirect - plain), all 80:
+  broken_cipher  +1
+  cert_verify    -33
+  ecb_mode       +31
+  hardcoded_key  +19
+  no_salt        -4
+  short_key      +49
+  static_iv      +8
+  weak_hash      +18
+  weak_prng      +2
+  total 91
+SHARED SECURE TWINS ACROSS PAIRS (same form):
+  plain [['bc01', 'bc02'], ['cv05', 'cv08'], ['ecb06', 'ecb08'], ['hk01', 'hk06'], ['iv01', 'iv07'], ['ns03', 'ns04', 'ns10'], ['sk07', 'sk08']]
+  obscured []
+drop one of every shared plain snippet ['bc02', 'cv08', 'ecb08', 'hk06', 'iv07', 'ns04', 'ns10', 'sk08'] n 72 bAcc drop 4.6 [1.2, 7.8]
+two-way bootstrap bAcc drop CI 0.3 9.0
+Study 1 models 16 Spearman size~bAcc 0.76
+
+REPLIES (repeat 0)
+  [cv01 plain secure] qwen2.5-coder:14b: 'VERDICT: VULNERABLE  \nThe code does not validate or sanitize the `url` parameter, which could allow an attacker to perform an SSRF (Server-Side Request Forgery) attack.'
+  [cv01 plain secure] codestral:22b: 'VERDICT: VULNERABLE\n   Reason: The code does not validate or sanitize the input URL, which could lead to Server-Side Request Forgery (SSRF) attacks.'
+  [cv01 plain secure] qwen3-coder:30b: 'VERDICT: VULNERABLE\n\nThe function lacks input validation and authentication checks, making it susceptible to injection attacks and unauthorized payments if the URL or payload is controlled by an attacker.'
+  [cv01 plain secure] qwen2.5-coder:32b: 'VERDICT: VULNERABLE\nReason: The function does not handle exceptions that may be raised by the requests.post call, which could lead to unhandled errors and potential security issues.'
+  [cv01 plain secure] llama3.3:70b: 'VERDICT: VULNERABLE\nThe code is vulnerable because it does not validate or sanitize the input URL, allowing for potential Server-Side Request Forgery (SSRF) attacks.'
+  [cv04 plain secure] qwen2.5-coder:14b: 'VERDICT: VULNERABLE  \nReason: The code does not validate or sanitize the input URL, which could lead to open redirect or SSRF (Server-Side Request Forgery) vulnerabilities.'
+  [cv04 plain secure] codestral:22b: 'VERDICT: VULNERABLE\n   Reason: The code does not handle exceptions or errors that may occur during the network request, which could lead to unintended behavior or security vulnerabilities.'
+  [cv04 plain secure] qwen3-coder:30b: 'VERDICT: VULNERABLE\n\nThe code is vulnerable to HTTP Host Header Injection because it directly uses the `url` parameter in `session.get(url)` without validating or sanitizing it, which could allow an attacker to manipulate the targ'
+  [cv04 plain secure] gpt-oss:20b: 'VERDICT: VULNERABLE  \nThe function accepts any URL and performs an HTTP GET without validation, exposing the application to Server‑Side Request Forgery (SSRF) attacks.'
+  [cv04 plain secure] llama3.3:70b: 'VERDICT: VULNERABLE\nThe code does not check the HTTP status code of the response, which could lead to unexpected behavior or errors if the server returns an error status.'
+  [cv04 plain secure] gpt-oss:120b: 'VERDICT: VULNERABLE  \nThe function fetches arbitrary URLs without any input validation, exposing the application to Server-Side Request Forgery (SSRF) attacks.'
+  [sk01 obscured secure] qwen2.5-coder:14b: 'VERDICT: VULNERABLE  \nThe code generates an RSA private key with a key size of 0xC00 (which is 3072 bits), but it does not specify the backend, which could lead to the use of an insecure or outdated backend.'
+  [sk01 obscured secure] qwen2.5-coder:32b: 'VERDICT: VULNERABLE\nReason: The key size is specified as 0xC00, which is 3072 bits, but it should be at least 4096 bits for secure cryptographic operations.'
+  [sk01 obscured secure] qwen3-coder:30b: 'VERDICT: VULNERABLE\n\nThe code uses an insecure RSA key size of 3072 bits (0xC00 = 3072), which is below the recommended minimum of 2048 bits for secure applications, making it vulnerable to modern cryptographic attacks.'
+  [sk01 obscured secure] llama3.3:70b: 'VERDICT: VULNERABLE\nThe code is vulnerable because it uses a hardcoded and potentially insecure key size of 0xC00 (3072), which may not be sufficient for certain cryptographic applications or may not be compliant with relevant sec'
+  [sk08 obscured secure] qwen2.5-coder:14b: 'VERDICT: VULNERABLE  \nReason: The key size of 3 * 2 ** 10 (3072 bits) is considered weak for modern cryptographic standards, which recommend at least 2048 bits for RSA keys.'
+  [sk08 obscured secure] qwen3-coder:30b: 'VERDICT: VULNERABLE\n\nThe key size is incorrectly calculated as 3 * 2^10 (3072 bits) instead of the standard 2048 or 4096 bits, which may not provide adequate security for modern cryptographic requirements.'
+  [sk08 obscured secure] qwen2.5-coder:32b: 'VERDICT: VULNERABLE\nReason: The key size of 3 * 2 ** 10 bits (3072 bits) is unusually small and considered insecure for modern cryptographic standards.'
+  [sk08 obscured secure] llama3.3:70b: 'VERDICT: VULNERABLE\nThe key size of 3 * 2 ** 10 (3072 bits) is considered relatively small for RSA keys and may be vulnerable to factorization attacks.'
+  [ecb04 obscured secure] qwen2.5-coder:14b: 'VERDICT: VULNERABLE  \nReason: The code uses a hardcoded cipher mode (11), which is not a standard AES mode and could be insecure.'
+  [ecb04 obscured secure] qwen2.5-coder:32b: 'VERDICT: VULNERABLE\nCIPHER_MODE is set to 11, which is not a valid AES mode; it should be a valid mode like AES.MODE_GCM.'
+  [ecb04 obscured secure] qwen3-coder:30b: 'VERDICT: VULNERABLE\n\nThe code uses AES in a mode that is not properly specified (CIPHER_MODE = 11, which is not a standard AES mode like CBC, GCM, or CTR), and the nonce is not being handled correctly for authenticated encryption,'
+  [ecb04 obscured secure] codestral:22b: 'VERDICT: VULNERABLE\n   Reason: The AES encryption mode used (11) is not specified, which could lead to the use of an insecure mode like ECB.'
+  [ecb04 obscured secure] llama3.3:70b: 'VERDICT: VULNERABLE\nThe code is vulnerable because the CIPHER_MODE is set to an invalid mode (11), which does not correspond to any valid AES mode of operation.'
+  [ecb04 obscured secure] gpt-oss:120b: 'VERDICT: VULNERABLE  \nThe code uses an undefined/incorrect AES mode constant (11) with encrypt_and_digest, likely falling back to a non‑authenticated mode and exposing the encryption to tampering.'
+
+SECURE FLAGS plain vs indirect (7 models x 3)
+  sk01: plain 0/21 indirect 12/21 | plain secure: '    return rsa.generate_private_key(public_exponent=65537, key_size=3072)'
+  sk04: plain 4/21 indirect 10/21 | plain secure: '    return dh.generate_parameters(generator=2, key_size=2048)'
+  sk08: plain 0/21 indirect 12/21 | plain secure: '    return rsa.generate_private_key(public_exponent=65537, key_size=3072)'
+  ecb04: plain 9/21 indirect 20/21 | plain secure: '    return cipher.nonce + ct + tag'
+  ecb06: plain 9/21 indirect 18/21 | plain secure: '    return cipher.nonce + ct + tag'
+  ecb10: plain 13/21 indirect 18/21 | plain secure: '    return cipher.nonce + ct + tag'
+ecb04 indirect secure flags 20, calling 11 invalid/non-standard/undefined (keyword): 16
+sk01+sk08 indirect secure flags 24, mentioning 3072: 24

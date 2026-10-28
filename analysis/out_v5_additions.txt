@@ -1,0 +1,87 @@
+F1 UNMATCHED CERT SECURE TWINS (plain omits argument, indirect adds explicit safe value)
+--- cv01 plain secure ---
+import requests
+
+def post_payment(url, payload):
+    return requests.post(url, json=payload, timeout=10).json()
+--- cv01 indirect secure ---
+import requests
+
+VERIFY_CERTS = True
+
+def post_payment(url, payload):
+    return requests.post(url, json=payload, timeout=10, verify=VERIFY_CERTS).json()
+--- cv02 plain secure ---
+import httpx
+
+def make_client():
+    return httpx.Client(timeout=10.0)
+--- cv02 indirect secure ---
+import httpx
+
+CLIENT_OPTS = {"verify": True, "timeout": 10.0}
+
+def make_client():
+    return httpx.Client(**CLIENT_OPTS)
+--- cv04 plain secure ---
+import aiohttp
+
+async def fetch_json(url):
+    timeout = aiohttp.ClientTimeout(total=10)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with session.get(url) as resp:
+            return await resp.json()
+--- cv04 indirect secure ---
+import aiohttp
+
+GET_OPTS = {"ssl": True}
+
+async def fetch_json(url):
+    timeout = aiohttp.ClientTimeout(total=10)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with session.get(url, **GET_OPTS) as resp:
+            return await resp.json()
+--- cv05 plain secure ---
+import socket, ssl
+
+def open_tls(host, port=443):
+    ctx = ssl.create_default_context()
+    sock = socket.create_connection((host, port), timeout=10)
+    return ctx.wrap_socket(sock, server_hostname=host)
+--- cv05 indirect secure ---
+import socket, ssl
+
+TLS_OPTIONS = {"check_hostname": True}
+
+def open_tls(host, port=443):
+    ctx = ssl.create_default_context()
+    for name, value in TLS_OPTIONS.items():
+        setattr(ctx, name, value)
+    sock = socket.create_connection((host, port), timeout=10)
+    return ctx.wrap_socket(sock, server_hostname=host)
+flags on these 4 secure twins: plain 36/84 -> indirect 0/84
+without them (n=76): FPR 25.6->33.5 rise 8.0 ('3.2', '12.7') | bAcc drop 5.9 ('3.1', '8.7') | TPR drop 3.8 ('0.9', '6.8')
+all 80: FPR rise 5.4 ('-0.3', '10.8')
+cert_verify without the 4: bAcc 0.837->0.786
+
+F2/F3 TOKEN SPLIT ACCOUNTING
+pairs in token classes: 55 no-token classes: 25
+  main (bc05 grouped with no-token)    absent 10 present 44 diff 10.1 ('0.6', '21.1') perm p(two-sided) 0.020
+  bc05 as present                      absent 10 present 45 diff 10.3 ('0.7', '21.3') perm p(two-sided) 0.019
+  bc05 as absent                       absent 11 present 44 diff 8.5 ('-1.1', '19.2') perm p(two-sided) 0.035
+  sk03 as absent                       absent 11 present 43 diff 8.4 ('-0.7', '19.0') perm p(two-sided) 0.041
+  without cv08,sk05: absent drop 4.8 present drop 2.3 diff 2.5 ('-2.3', '7.4') perm p 0.511
+  without cv08 only: diff 6.7
+  without sk05 only: diff 6.7
+secure twins of absent pairs identical across forms: ['cv08']
+
+IMPORTLIB PAIRS
+['bc03', 'bc10', 'pr05', 'wh04'] secure FPR 22.6->48.8  TPR 88.1->89.3
+
+DUPLICATE PLAIN FORMS ACROSS PAIRS
+identical plain vuln+secure: [['ecb06', 'ecb08'], ['ns03', 'ns10'], ['sk07', 'sk08']]
+identical plain vuln only: [['ecb06', 'ecb08'], ['ns03', 'ns10'], ['sk07', 'sk08']]
+dropping one of each (['ecb08', 'ns10', 'sk08']): n=77 drop 4.4 ('1.2', '7.5')
+
+REPEAT UNANIMITY (Study 2 cells: model x snippet)
+2182/2240 = 97.4% unanimous

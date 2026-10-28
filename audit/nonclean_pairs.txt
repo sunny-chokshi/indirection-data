@@ -1,0 +1,12 @@
+Post hoc stimulus audit, CryptoBench v2 paired set (Oct 8 2026). 33 of 80 pairs differ in more than the route to the misuse.
+Source: independent review pass (hostile agent read all 320 snippets; reviewer confirmed wh10 ecb08 wh09 cv09 bc06 sk07 wh07;
+writer confirmed cv01 cv02 cv04 cv05 cv06 cv08 sk05 sk07 wh07 bc03 bc10 pr05 wh04 by reading). Released with the paper.
+unmatched secure twin (indirect states the safe value, plain omits it): cv01 cv02 cv04 cv05 ns01
+API changes on the vulnerable side: cv08 sk05 ns09 hk04 hk10 hk08
+misuse conditional on an environment variable: cv06 sk07 wh07 ns10 (hk08 above)
+importlib added in the indirect form: bc03 bc10 pr05 wh04
+secure twin contains the bad token: wh10 ecb08
+plain form keeps an unused leftover of the indirect form: wh09 cv09 bc06 hk07 ecb10 (bc10 above)
+secure twin changes API between forms: ecb02 pr03 hk01 iv03
+other: hk05 pr10 ecb05
+Clean pairs (47): all others.

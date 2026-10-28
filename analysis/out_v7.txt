@@ -1,0 +1,5 @@
+11 numeric n=11: bAcc drop 17.3 [11.5, 23.6] | FPR rise 31.2 [20.8, 42.4] | TPR drop 3.5 [0.4, 6.9]
+other 69 n=69: bAcc drop 2.5 [-0.9, 5.7] | FPR rise 1.3 [-4.4, 6.8] | TPR drop 3.7 [0.6, 7.0]
+clean minus numeric n=39: bAcc drop 2.6 [-0.2, 5.4] | FPR rise 4.0 [0.2, 8.1] | TPR drop 1.2 [-2.6, 4.9]
+gross secure-flag rise 185 fall 94 net 91 net in numeric pairs 72
+numeric pairs in non-clean list: ['ecb10', 'hk01', 'iv03']
